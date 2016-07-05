@@ -35,6 +35,24 @@ use humhub\modules\space\models\Space;
             ));
             ?>
         </div>
+        
+        <div id="tagContainer" class="form-group hidden" style="margin-top: 15px;">
+            <input type="text" value="" id="tagInput" name="tagInput"/>
+
+            <?php
+            $tagSearchUrl = Url::toRoute(['/tag/search/json', 'keyword' => '-keywordPlaceholder-']);
+
+            /* add TagPickerWidget to add tags */
+            
+            echo \humhub\modules\tag\widgets\TagPicker::widget(array(
+                'inputId' => 'tagInput',
+                'tagSearchUrl' => $tagSearchUrl,
+                'maxTags' => 10,
+                'placeholderText' => "Adicionar uma Tag",
+                'focus' => true,
+            ));
+            ?>
+        </div>
 
         <?php
         echo Html::hiddenInput("containerGuid", $contentContainer->guid);
@@ -74,6 +92,7 @@ use humhub\modules\space\models\Space;
                     'fileListFieldName' => 'fileList',
                 ));
                 ?>
+                <button type="button" class="btn btn-info" onclick="showTagInput()"><span class="glyphicon glyphicon-tags">&nbsp; </span> Adicionar tags</button>
                 <script>
                     $('#fileUploaderButton_contentFormFiles').bind('fileuploaddone', function (e, data) {
                         $('.btn_container').show();
@@ -187,6 +206,11 @@ use humhub\modules\space\models\Space;
         $('#notifyUserContainer').removeClass('hidden');
         $('#notifyUserInput_tag_input_field').focus();
     }
+    
+    function showTagInput() {
+        $('#tagContainer').removeClass('hidden');
+        $('#tagInput_tag_input_field').focus();
+    }
 
     function handleResponse(response) {
         if (!response.errors) {
@@ -199,8 +223,11 @@ use humhub\modules\space\models\Space;
             $('.contentForm').filter('textarea').val('').trigger('autosize.resize');
             $('.contentForm').attr('checked', false);
             $('.userInput').remove(); // used by UserPickerWidget
+            $('.tagInput').remove(); //used by TagPickerWidget
             $('#notifyUserContainer').addClass('hidden');
+            $('#tagContainer').addClass('hidden');
             $('#notifyUserInput').val('');
+            $('#tagInput').val('');
             
             setDefaultVisibility();
             

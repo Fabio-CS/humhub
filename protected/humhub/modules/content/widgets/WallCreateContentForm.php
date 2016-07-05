@@ -16,6 +16,7 @@ use humhub\modules\space\models\Space;
 use humhub\modules\content\models\Content;
 use humhub\modules\content\components\ContentContainerActiveRecord;
 use humhub\modules\content\components\ContentActiveRecord;
+use humhub\modules\tag\models\Tag;
 
 /**
  * WallCreateContentForm is the base widget to create  "quick" create content forms above Stream/Wall.
@@ -130,6 +131,26 @@ class WallCreateContentForm extends Widget
                 $user = User::findOne(['guid' => trim($guid)]);
                 if ($user) {
                     $record->content->notifyUsersOfNewContent[] = $user;
+                }
+            }
+        }
+        
+        // Handle New Tag of ContentFormWidget
+        $tagsIds = Yii::$app->request->post('tagInput');
+        if ($tagsIds != "") {
+            $array = array_filter(explode(",", $tagsIds));
+            foreach ($array as $tagId) {
+                $tag = Tag::findOne(['id' => trim($tagId)]);
+                if (!$tag) {
+                    $newTag = new Tag();
+                    $newTag->name = str_replace("_"," ", trim($tagId));
+                    if($newTag->validate() && $newTag->save()){
+                        $record->content->tagsToAdd[] = $newTag;
+                    }else{
+                        return array('errors' => $newTag->getErrors());
+                    }
+                }else{
+                     $record->content->tagsToAdd[] = $tag;
                 }
             }
         }

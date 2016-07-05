@@ -12,6 +12,7 @@ use Yii;
 use yii\base\Exception;
 use humhub\modules\user\models\User;
 use humhub\modules\space\models\Space;
+use humhub\modules\tag\models\Tag;
 use humhub\modules\content\components\ContentActiveRecord;
 use humhub\modules\content\components\ContentContainerActiveRecord;
 
@@ -51,7 +52,9 @@ class Content extends \humhub\components\ActiveRecord
      * @var Array User
      */
     public $notifyUsersOfNewContent = array();
-
+    
+    public $tagsToAdd = array();
+    
     // Visibility Modes
     const VISIBILITY_PRIVATE = 0;
     const VISIBILITY_PUBLIC = 1;
@@ -100,6 +103,11 @@ class Content extends \humhub\components\ActiveRecord
             [['guid'], 'unique']
         ];
     }
+    
+    public function getTags()
+    {
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('content_tag', ['content_id' => 'id']);
+    }
 
     /**
      * User which created this Content
@@ -110,9 +118,10 @@ class Content extends \humhub\components\ActiveRecord
      */
     public function getUser()
     {
-        return $this->createdBy;
+        return $this->hasOne(User::className(), ['id' => 'createdBy']);
+        //return $this->createdBy;
     }
-
+    
     /**
      * Return space (if this content assigned to a space)
      * Note: Use container attribute instead
@@ -203,6 +212,11 @@ class Content extends \humhub\components\ActiveRecord
                 $activity->source = $this->getPolymorphicRelation();
                 $activity->create();
             }
+            
+            foreach ($this->tagsToAdd as $tag) {
+                $this->link('tags', $tag);
+            }
+            
         }
 
         \humhub\modules\file\models\File::attachPrecreated($this->getPolymorphicRelation(), $this->attachFileGuidsAfterSave);
