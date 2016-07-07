@@ -25,7 +25,8 @@ $user = $this->context->getUser();
                 echo \humhub\modules\user\widgets\ProfileSidebar::widget([
                     'user' => $this->context->user,
                     'widgets' => [
-                        [\humhub\modules\user\widgets\UserTags::className(), ['user' => $this->context->user], ['sortOrder' => 10]],
+                        // [\humhub\modules\user\widgets\UserTags::className(), ['user' => $this->context->user], ['sortOrder' => 10]],
+                        [app\modules\contentrating\widgets\UserContentTags::className(), ['user' => $this->context->user], ['sortOrder' => 11]],
                         [\humhub\modules\user\widgets\UserSpaces::className(), ['user' => $this->context->user], ['sortOrder' => 20]],
                         [\humhub\modules\friendship\widgets\FriendsPanel::className(), ['user' => $this->context->user], ['sortOrder' => 30]],
                         [\humhub\modules\user\widgets\UserFollower::className(), ['user' => $this->context->user], ['sortOrder' => 40]],

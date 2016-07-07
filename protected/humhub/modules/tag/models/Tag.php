@@ -8,6 +8,7 @@ namespace humhub\modules\tag\models;
 use Yii;
 use humhub\modules\tag\components\ActiveQueryTag;
 use humhub\modules\content\models\Content;
+use humhub\modules\contentrating\models\Rating;
 
 /**
  * This is the model class for table "tag".
@@ -17,6 +18,8 @@ use humhub\modules\content\models\Content;
  */
 class Tag extends \yii\db\ActiveRecord implements \humhub\modules\search\interfaces\Searchable
 {
+    
+    public $rating;
     /**
      * @inheritdoc
      */
@@ -69,6 +72,10 @@ class Tag extends \yii\db\ActiveRecord implements \humhub\modules\search\interfa
     public function getName()
     {
         return $this->name;
+    }
+    
+    public function getRatings(){
+        return $this->hasMany(Rating::className(), ['tag_id' => 'id']);
     }
     
     public function getContents()

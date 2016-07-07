@@ -118,7 +118,7 @@ class Content extends \humhub\components\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'createdBy']);
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
         //return $this->createdBy;
     }
     

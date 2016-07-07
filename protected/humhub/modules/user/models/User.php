@@ -14,6 +14,7 @@ use humhub\modules\content\components\ContentContainerActiveRecord;
 use humhub\modules\user\models\GroupUser;
 use humhub\modules\user\components\ActiveQueryUser;
 use humhub\modules\friendship\models\Friendship;
+use humhub\modules\content\models\Content;
 
 /**
  * This is the model class for table "user".
@@ -639,6 +640,11 @@ class User extends ContentContainerActiveRecord implements \yii\web\IdentityInte
         }
 
         return self::USERGROUP_USER;
+    }
+    
+    public function getContents()
+    {
+        return $this->hasMany(Content::className(), ['created_by' => 'id']);
     }
 
 }
